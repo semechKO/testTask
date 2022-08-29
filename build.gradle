@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = "5.9.0"
+    lombokVersion = "1.18.22"
+    jacksonVersion = "2.13.1"
+    springVersion = "2.6.3"
+    fakerVersion = "1.0.2"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+dependencies {
+
+    implementation "com.github.javafaker:javafaker:$fakerVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    implementation "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+    //Jackson
+    implementation "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion"
+
+    //Logger
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'org.slf4j:slf4j-log4j12:1.7.32'
+
+    //Spring
+    implementation "org.springframework.boot:spring-boot-starter-web:$springVersion"
+    implementation("org.springframework.boot:spring-boot-starter-test:$springVersion") {
+        exclude group: 'org.mockito', module: 'mockito-core'
+        exclude group: 'org.mockito', module: 'mockito-junit-jupiter'
+    }
+}
+
+test {
+    useJUnitPlatform()
+    ignoreFailures = true
+    testLogging.showStandardStreams = true
+}
+
+configurations {
+    all*.exclude module: 'spring-boot-starter-logging'
+}
